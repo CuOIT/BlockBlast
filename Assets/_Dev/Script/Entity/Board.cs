@@ -21,6 +21,10 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
     const string BOARD = "BOARD";
 
 
+    private int combo;
+
+    [SerializeField] List<AudioClip> comboSfxs;
+
     [ShowInInspector, TableMatrix(HorizontalTitle = "Board State", SquareCells = true)]
     private bool[,] BoardState
     {
@@ -50,7 +54,7 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
     }
     private void Awake()
     {
-
+        combo = 0;
         _boxGrid = new List<List<Box>>();
         for(int i = 0; i < _boardHeight; i++)
         {
@@ -152,6 +156,31 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
         }
         return (ulong)tempCol;
     }
+
+    public virtual bool PlacableAndMakeRowOrCol(List<Box> boxes,out bool rowOrColClear)
+    {
+        bool placable = false;
+        rowOrColClear = false;
+        for (int i = 0; i < _boardHeight; i++)
+            for (int j = 0; j < _boardWidth; j++)
+            {
+                ulong boxesValue = GetBoxesValue(boxes);
+                if (Placable(new Vector2Int(i, j), boxes))
+                {
+                    ulong tempState = _boardState | (boxesValue << (i + j * _boardWidth));
+                    ulong rowClear = GetRowClear(tempState);
+                    ulong colClear = GetColClear(tempState);
+                    if (rowClear >0 || colClear>0)
+                    {
+                        rowOrColClear = true;
+                        return true;
+                    }
+                    placable = true;
+                }
+
+            }
+        return placable;
+    }
     private int GetNum(ulong rowOrColClear)
     {
         int count = 0;
@@ -183,7 +212,6 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
 
         return (boxesValue & _boardState)==0;// true if all pos to place are free;
     }
-
     public bool Placable(List<Box> boxes)
     {
         for(int i = 0; i < _boardHeight; i++)
@@ -223,6 +251,8 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
   
             if(rowsClear != 0 || colsClear != 0)
             {
+                AudioManager.Ins.PlaySFX(comboSfxs[Mathf.Clamp(combo, 0, comboSfxs.Count)]);
+                combo++;
                 clearRowAndColEvent.RaiseEvent(new Vector2Int(GetNum(rowsClear), GetNum(colsClear)));
                 SetRowColor(rowsClear, color);
                 SetColColor(colsClear, color);
@@ -251,6 +281,10 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
                         }
                     }
                 }
+            }
+            else
+            {
+                combo = 0;
             }
              PlaceEvent.RaiseEvent();
         }
@@ -321,6 +355,7 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
 
     public void LoadProcess(string gameMode)
     {
+        combo = 0;
         string state = PlayerPrefs.GetString(BOARD + gameMode, "0");
         if (ulong.TryParse(state, out _boardState))
         {
@@ -355,6 +390,7 @@ public class Board : MonoBehaviour, IBoardChecker,IEntity
 
     public void ResetProcess(string gameMode)
     {
+        combo = 0;
         _boardState = 0;
         SaveProcess(gameMode);
         foreach (var boxRow in _boxGrid)
@@ -376,6 +412,7 @@ public interface IBoardChecker
 {
     public bool Placable(Vector2 screenPos, List<Box> boxes,out Vector3 placablePos);
 
+    public bool PlacableAndMakeRowOrCol(List<Box> boxes, out bool rowOrColClear);
     public bool Placable(List<Box> boxes);
 
     public void Place(Vector2 screenPos, List<Box> boxes);

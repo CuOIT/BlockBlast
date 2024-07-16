@@ -54,8 +54,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b8d461babe7c7d4a8c8bc2bb54c3f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPause: 0
   gameMode: 0
   gameProcess: {fileID: 6208355675812044866}
+  loseSfx: {fileID: 8300000, guid: f8aa2bcef204048d0b8f733af767e2c0, type: 3}
 --- !u!114 &6208355675812044866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,7 +261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_AnchorMin.x
@@ -267,7 +269,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_SizeDelta.x
@@ -275,7 +277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 103.01331
+      value: 103.013306
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_LocalPosition.x
@@ -311,7 +313,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 646.1
+      value: 206.09998
       objectReference: {fileID: 0}
     - target: {fileID: 22595125565896607, guid: f1a217d2bfd061040b6f0fd6628961ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

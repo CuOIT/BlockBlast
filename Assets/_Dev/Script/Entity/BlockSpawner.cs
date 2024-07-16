@@ -3,6 +3,9 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using static UnityEditor.PlayerSettings;
+using static Unity.Collections.AllocatorManager;
+
 public class BlockSpawner : MonoBehaviour,IEntity
 {
     [SerializeField] BlockDic blockDic;
@@ -61,7 +64,95 @@ public class BlockSpawner : MonoBehaviour,IEntity
         }
 
     }
-    public void RemoveBlock(Block block)
+    [Range(3,7)]
+    [SerializeField] int randomCount;
+    public void GetRandomBlockAdvanced()
+    {
+            state = new();
+            blockNum = poss.Count;
+            List<Block> selectableBlocks = new List<Block>(blocks);
+            List<Block> selectedBlocks = new List<Block>();
+            List<Block> placableBlocks = new List<Block>();
+
+            for(int i = selectableBlocks.Count-1; i >=0 ; i--)
+            {
+                Block block = selectableBlocks[i];
+                bool canMakeRowOrCol = false;
+                if (block.CanPlaceAndMakeRowOrCol(out canMakeRowOrCol, _boardChecker))
+                {
+                    if (canMakeRowOrCol)
+                    {
+                        selectedBlocks.Add(block);
+                        selectableBlocks.RemoveAt(i);
+                        if (selectableBlocks.Count >= blockNum)
+                            break;
+                    }
+                    else
+                    {
+                        placableBlocks.Add(block);
+                        selectableBlocks.RemoveAt(i);
+
+                    }
+                }
+
+            }
+       
+            #region pick 1 block that make Row or Col
+            if(selectedBlocks.Count > 0)
+            {
+                int rand = Random.Range(0, selectedBlocks.Count);
+                Block block = selectedBlocks[rand];
+                foreach(Block b in selectedBlocks)
+                {
+                    if (b != block)
+                    {
+                        placableBlocks.Add(b);
+                    }
+                }
+
+                selectedBlocks.Clear();
+                selectedBlocks.Add(block);
+                /*Block block = Instantiate(blocks[rand], poss[i]);
+                state.Add(block.ToString());
+                RectTransform rect = block.GetComponent<RectTransform>();
+                rect.anchoredPosition += Screen.width * Vector2.right;
+                block.transform.DOMove(poss[i].position, 0.3f);
+                block.Init(_boardChecker);
+                block.placeEvent += RemoveBlock;
+                block.CanPlaced();
+                currentBlocks[poss[i]] = block;*/
+            }
+            #endregion
+        while (selectableBlocks.Count > 0 && randomCount >= 0){
+                int rand = Random.Range(0, selectableBlocks.Count);
+                Block block = selectableBlocks[rand];
+                selectableBlocks.RemoveAt(rand);
+                placableBlocks.Add(block);
+                randomCount--;
+            };
+        while (selectedBlocks.Count < blockNum)
+        {
+            int rand = Random.Range(0, placableBlocks.Count);
+            Block block = placableBlocks[rand];
+            placableBlocks.RemoveAt(rand);
+            selectedBlocks.Add(block);
+        }
+
+        for(int i = 0; i < blockNum; i++)
+        {
+            Block block = Instantiate(selectedBlocks[i], poss[i]);
+            state.Add(block.ID.ToString());
+            RectTransform rect = block.GetComponent<RectTransform>();
+            rect.anchoredPosition += Screen.width * Vector2.right;
+            block.transform.DOMove(poss[i].position, 0.3f);
+            block.Init(_boardChecker);
+            block.placeEvent += RemoveBlock;
+            block.CanPlaced();
+            currentBlocks[poss[i]] = block;
+        }
+          
+        }
+        public void RemoveBlock(Block block)
     {
         for(int i = 0; i < poss.Count; i++)
         {
@@ -87,7 +178,7 @@ public class BlockSpawner : MonoBehaviour,IEntity
         blockNum--;
         if(blockNum <= 0)
         {
-            GetRandomBlock();
+            GetRandomBlockAdvanced();
         }
         bool canPlace = false;
         foreach(var pos in poss)
@@ -166,11 +257,3 @@ public class BlockSpawner : MonoBehaviour,IEntity
     }
 }
 
-public class BlockSpawnerState
-{
-    public List<string> blockIDs;
-    public BlockSpawnerState(int size)
-    {
-        blockIDs= new List<string>(new string[size]);
-    }
-}

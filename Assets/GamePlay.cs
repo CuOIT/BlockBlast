@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GamePlay : Singleton<GamePlay>
 {
-    private bool isLose;
+    public bool isPause;
 
     private enum GameMode
     {
@@ -14,6 +14,8 @@ public class GamePlay : Singleton<GamePlay>
     }
     [SerializeField] GameMode gameMode;
     [SerializeField] GameProcess gameProcess;
+
+    [SerializeField] AudioClip loseSfx;
 
     public void OnNoBlockToPlace()
     {
@@ -41,7 +43,6 @@ public class GamePlay : Singleton<GamePlay>
     }
     public void PlayNewGame()
     {
-        isLose = false;
         ResetGameState();
         LoadGame();
 
@@ -62,7 +63,7 @@ public class GamePlay : Singleton<GamePlay>
 
     public virtual void EndGame()
     {
-        Debug.Log("LOSE");
+        AudioManager.Ins.PlaySFX(loseSfx);
     }
 
 

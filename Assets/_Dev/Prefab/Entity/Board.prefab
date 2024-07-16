@@ -135,6 +135,11 @@ MonoBehaviour:
   clearRowAndColEvent: {fileID: 11400000, guid: ca878b9876235534f80d23b99b6a602c, type: 2}
   placeBoxesEvent: {fileID: 11400000, guid: 98676c087c38a6042b8740ba19351930, type: 2}
   PlaceEvent: {fileID: 11400000, guid: 0eb9dc74417ad8b43ac12e825d87771a, type: 2}
+  comboSfxs:
+  - {fileID: 8300000, guid: c7ab18b558b3c4feeb544ca4a551cdcb, type: 3}
+  - {fileID: 8300000, guid: ef5ff4bbf36b64a059c2ce852c671895, type: 3}
+  - {fileID: 8300000, guid: ccd38a40a9f1d4ce994cb7cd1eb16673, type: 3}
+  - {fileID: 8300000, guid: 6e3240e066d374b998146ec9e274d9fb, type: 3}
   delay: 0.03
 --- !u!222 &9196393960485098849
 CanvasRenderer:

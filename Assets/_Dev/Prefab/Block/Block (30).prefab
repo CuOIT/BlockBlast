@@ -114,6 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc4ead6c3439b124885d7ba31b79e886, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickUpSfx: {fileID: 8300000, guid: 2e4f38716b44e446c82108a5cf7a9f38, type: 3}
+  unPickSfx: {fileID: 8300000, guid: 02e409864d6a942e48fab6a610a8b7ec, type: 3}
+  placeSfx: {fileID: 8300000, guid: e1ecfc6f338b74338960e0a0cc17b51b, type: 3}
 --- !u!114 &7015159810608332085
 MonoBehaviour:
   m_ObjectHideFlags: 0

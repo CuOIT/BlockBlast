@@ -210,6 +210,7 @@ MonoBehaviour:
   Board: {fileID: 0}
   state: []
   noPosToPlaceEvent: {fileID: 11400000, guid: 716e4d1d8eea0cf4193ac4a363c8fa7c, type: 2}
+  randomCount: 7
 --- !u!114 &335451980532002071
 MonoBehaviour:
   m_ObjectHideFlags: 0

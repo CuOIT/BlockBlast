@@ -27,6 +27,13 @@ public class Block : MonoBehaviour,IDragHandler,IPointerDownHandler,IPointerUpHa
 
     public event PlaceEvent placeEvent;
 
+    [SerializeField] AudioClip pickUpSfx;
+    [SerializeField] AudioClip unPickSfx;
+    [SerializeField] AudioClip placeSfx;
+
+
+    public int ID;
+
    private void Start()
     {
         _touchOffset = Vector2.up * 200;
@@ -75,6 +82,11 @@ public class Block : MonoBehaviour,IDragHandler,IPointerDownHandler,IPointerUpHa
         return placable;
             
     }
+
+    public bool CanPlaceAndMakeRowOrCol(out bool rowOrColClear,IBoardChecker board)
+    {
+        return board.PlacableAndMakeRowOrCol(boxes, out rowOrColClear);
+    }
     private void OnEnable()
     {
         transform.localScale = Vector3.one * 0.6f;
@@ -98,8 +110,10 @@ public class Block : MonoBehaviour,IDragHandler,IPointerDownHandler,IPointerUpHa
         targetPos = Camera.main.ScreenToWorldPoint(eventData.position + _touchOffset);
         targetPos.z = transform.position.z;
         transform.position = targetPos;
-        //_shadow.parent = transform.parent;
-
+        if(pickUpSfx!=null)
+        {
+            AudioManager.Ins.PlaySFX(pickUpSfx);
+        }
     }
 
 
@@ -109,7 +123,7 @@ public class Block : MonoBehaviour,IDragHandler,IPointerDownHandler,IPointerUpHa
         targetPos = Camera.main.ScreenToWorldPoint(eventData.position + _touchOffset);
         targetPos.z = transform.position.z;
         transform.position = Vector3.Slerp(transform.position, targetPos, 0.9f);
-        if(_boardChecker.Placable(Camera.main.WorldToScreenPoint(_rectTransform.position),boxes,out Vector3 placablePos))
+        if(_boardChecker.Placable(Camera.main.WorldToScreenPoint(_rectTransform.position),boxes,out Vector3 placablePos ))
         {
             _shadow.gameObject.SetActive(true);
             _shadow.position = placablePos;
@@ -128,12 +142,20 @@ public class Block : MonoBehaviour,IDragHandler,IPointerDownHandler,IPointerUpHa
         if (_boardChecker.Placable(screenPos, boxes, out Vector3 placablePos))
         {
             placeEvent.Invoke(this);
+            if (placeSfx!=null)
+            {
+                AudioManager.Ins.PlaySFX(placeSfx);
+            }
             _boardChecker.Place(screenPos, boxes);
             Destroy(gameObject);
         }
         else
         {
             _boardChecker.Place(screenPos, null);
+            if (unPickSfx!=null)
+            {
+                AudioManager.Ins.PlaySFX(unPickSfx);
+            }
             transform.DOMove(startPos, 0.2f);
             transform.localScale = Vector3.one * 0.6f;
         }

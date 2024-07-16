@@ -10,8 +10,16 @@ public class BlockDic : ScriptableObject
 {
     [SerializeField] List<Block> blocks;
 
+    private void OnEnable()
+    {
+        
+    }
     public List<Block> GetBlockList()
     {
+        for (int i = 0; i < blocks.Count; i++)
+        {
+            blocks[i].ID = i;
+        }
         return blocks; 
     }
 #if UNITY_EDITOR
